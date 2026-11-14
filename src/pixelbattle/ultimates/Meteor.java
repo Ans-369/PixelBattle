@@ -1,5 +1,7 @@
 package pixelbattle.ultimates;
 
+import pixelbattle.core.Fighter;
+import pixelbattle.core.Ultimate;
 /*
  * TODO 8: ультимейт «Метеорит» — ЗВИЧАЙНИЙ (іменований) клас:
  *
@@ -16,3 +18,26 @@ package pixelbattle.ultimates;
  *
  *   Потім підключіть ультимейт у конструкторі Mage: setUltimate(new Meteor());
  */
+public class Meteor implements Ultimate {
+
+    @Override
+    public String getName() {
+        return "Метеорит";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Завдає 20–30 шкоди кожному живому ворогу";
+    }
+
+    @Override
+    public String activate(Fighter user, Fighter[] allies, Fighter[] enemies) {
+        int totalDamage = 0;
+        for (Fighter e : enemies) {
+            if (e.isAlive()) {
+                totalDamage += e.takeDamage(Fighter.random(20, 30));
+            }
+        }
+        return user.getName() + " викликає Метеорит і завдає " + totalDamage + " загальної шкоди!";
+    }
+}

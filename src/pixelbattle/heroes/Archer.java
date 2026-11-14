@@ -4,6 +4,7 @@ import pixelbattle.core.Hero;
 import pixelbattle.core.Skill;
 import pixelbattle.core.Target;
 import pixelbattle.engine.Sprite;
+import pixelbattle.core.Fighter;
 
 /** Лучниця — швидка й спритна. */
 public class Archer extends Hero {
@@ -28,6 +29,36 @@ public class Archer extends Hero {
         //   кожен живий ворог отримує N стріл по random(4, 8) шкоди,
         //   де N = 3 при першому використанні, 4 — при другому, 5 — при третьому...
         //   (лічильник — поле всередині анонімного класу; знадобиться вкладений цикл).
+        setUltimate(new Ultimate() {
+            private int arrows = 3;
+
+            @Override
+            public String getName() {
+                return "Злива стріл";
+            }
+
+            @Override
+            public String getDescription() {
+                return "Кожен живий ворог отримує " + arrows + " стріл по 4-8 шкоди";
+            }
+
+            @Override
+            public String activate(Fighter user, Fighter[] allies, Fighter[] enemies) {
+                int totalDmg = 0;
+                int count = arrows;
+                for (Fighter e : enemies) {
+                    if (e.isAlive()) {
+                        for (int i = 0; i < count; i++) {
+                            if (e.isAlive()) {
+                                totalDmg += e.takeDamage(random(4, 8));
+                            }
+                        }
+                    }
+                }
+                arrows++;
+                return user.getName() + " випускає зливу стріл (" + count + " шт. у ціль)! Загальна шкода: " + totalDmg;
+            }
+        });
     }
 
     // TODO 5: пасивка «Ухилення» — перевизначте modifyIncomingDamage:

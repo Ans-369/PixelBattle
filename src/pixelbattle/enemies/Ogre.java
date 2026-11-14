@@ -4,6 +4,8 @@ import pixelbattle.core.Enemy;
 import pixelbattle.core.Skill;
 import pixelbattle.core.Target;
 import pixelbattle.engine.Sprite;
+import pixelbattle.core.Fighter;
+import pixelbattle.core.Ultimate;
 
 /** Огр — бос. Повільний, але дуже сильний. */
 public class Ogre extends Enemy {
@@ -22,6 +24,29 @@ public class Ogre extends Enemy {
         //   кожному живому герою 12 шкоди, а сам огр лікується на 20.
         //   Увага: для огра вороги — це герої, тобто масив enemies у activate(...).
         //   Огр використає ультимейт сам, щойно енергія заповниться.
+        setUltimate(new Ultimate() {
+            @Override
+            public String getName() {
+                return "Землетрус";
+            }
+
+            @Override
+            public String getDescription() {
+                return "12 шкоди кожному живому герою, огр лікується на 20 HP";
+            }
+
+            @Override
+            public String activate(Fighter user, Fighter[] allies, Fighter[] enemies) {
+                int totalDmg = 0;
+                for (Fighter e : enemies) {
+                    if (e.isAlive()) {
+                        totalDmg += e.takeDamage(12);
+                    }
+                }
+                int healed = user.heal(20);
+                return user.getName() + " влаштовує Землетрус! Завдано " + totalDmg + " шкоди, відновлено " + healed + " HP";
+            }
+        });
     }
 
     // ПРИКЛАД ПАСИВКИ: «Товста шкіра» — за один удар огр втрачає не більше 25 HP.
